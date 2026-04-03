@@ -1,0 +1,73 @@
+{
+	"name": "@masonjames/emdash-author-box",
+	"version": "0.1.0",
+	"description": "Production-ready author box plugin for EmDash CMS with a Portable Text block and reusable Astro component.",
+	"type": "module",
+	"main": "./dist/index.js",
+	"files": [
+		"dist",
+		"src/astro",
+		"README.md",
+		"CHANGELOG.md",
+		"LICENSE",
+		"icon.png",
+		"screenshots"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./descriptor": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./plugin": {
+			"types": "./dist/plugin.d.ts",
+			"default": "./dist/plugin.js"
+		},
+		"./astro": "./src/astro/index.ts",
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"check": "npm run build && npm run typecheck && npm run test",
+		"prepack": "npm run check"
+	},
+	"keywords": [
+		"emdash",
+		"astro",
+		"cms",
+		"plugin",
+		"author",
+		"byline",
+		"portable-text"
+	],
+	"author": "Mason James",
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/masonjames/emdash-author-box.git"
+	},
+	"bugs": {
+		"url": "https://github.com/masonjames/emdash-author-box/issues"
+	},
+	"homepage": "https://github.com/masonjames/emdash-author-box#readme",
+	"peerDependencies": {
+		"astro": ">=6.0.0-beta.0",
+		"emdash": "^0.1.0"
+	},
+	"devDependencies": {
+		"@types/node": "^24.0.0",
+		"astro": "^6.0.0",
+		"emdash": "^0.1.0",
+		"tsdown": "^0.15.0",
+		"typescript": "^5.8.0",
+		"vitest": "^4.0.0"
+	}
+}

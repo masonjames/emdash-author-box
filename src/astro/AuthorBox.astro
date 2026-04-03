@@ -1,0 +1,254 @@
+---
+import { resolveAuthorBoxModel } from "../model.js";
+import type { AuthorBoxProps } from "../types.js";
+
+const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
+---
+
+{
+	model && (
+		<aside
+			class:list={["emdash-author-box", model.className]}
+			data-author-box
+			data-layout={model.layout}
+			data-contributors={model.contributors.length === 1 ? "1" : "many"}
+		>
+			{model.heading && <p class="emdash-author-box__eyebrow">{model.heading}</p>}
+
+			{model.layout === "single" ? (
+				<div class="emdash-author-box__single">
+					{model.contributors.map((contributor) => (
+						<article class="emdash-author-box__card" data-primary={contributor.isPrimary ? "true" : "false"}>
+							{model.showAvatar && (
+								<div class="emdash-author-box__avatar-wrap">
+									{contributor.avatarUrl ? (
+										<img
+											class="emdash-author-box__avatar"
+											src={contributor.avatarUrl}
+											alt=""
+											loading="lazy"
+											decoding="async"
+										/>
+									) : (
+										<div class="emdash-author-box__avatar-fallback" aria-hidden="true">
+											{contributor.initials ?? "?"}
+										</div>
+									)}
+								</div>
+							)}
+							<div class="emdash-author-box__body">
+								<h3 class="emdash-author-box__name">{contributor.name}</h3>
+								{model.showBio && contributor.bio && (
+									<p class="emdash-author-box__bio">{contributor.bio}</p>
+								)}
+								{model.showWebsite && contributor.websiteUrl && (
+									<p class="emdash-author-box__meta">
+										<a
+											class="emdash-author-box__link"
+											href={contributor.websiteUrl}
+											target="_blank"
+											rel="noreferrer"
+										>
+											{contributor.websiteLabel ?? "Visit website"}
+										</a>
+									</p>
+								)}
+							</div>
+						</article>
+					))}
+				</div>
+			) : (
+				<ul class="emdash-author-box__list" role="list">
+					{model.contributors.map((contributor) => (
+						<li class="emdash-author-box__item">
+							<article class="emdash-author-box__card" data-primary={contributor.isPrimary ? "true" : "false"}>
+								<div class="emdash-author-box__card-header">
+									{model.showAvatar && (
+										<div class="emdash-author-box__avatar-wrap">
+											{contributor.avatarUrl ? (
+												<img
+													class="emdash-author-box__avatar"
+													src={contributor.avatarUrl}
+													alt=""
+													loading="lazy"
+													decoding="async"
+												/>
+											) : (
+												<div class="emdash-author-box__avatar-fallback" aria-hidden="true">
+													{contributor.initials ?? "?"}
+												</div>
+											)}
+										</div>
+									)}
+									<div class="emdash-author-box__body">
+										<h3 class="emdash-author-box__name">{contributor.name}</h3>
+										{model.showWebsite && contributor.websiteUrl && (
+											<p class="emdash-author-box__meta">
+												<a
+													class="emdash-author-box__link"
+													href={contributor.websiteUrl}
+													target="_blank"
+													rel="noreferrer"
+												>
+													{contributor.websiteLabel ?? "Visit website"}
+												</a>
+											</p>
+										)}
+									</div>
+								</div>
+								{model.showBio && contributor.bio && (
+									<p class="emdash-author-box__bio">{contributor.bio}</p>
+								)}
+							</article>
+						</li>
+					))}
+				</ul>
+			)}
+		</aside>
+	)
+}
+
+<style>
+	.emdash-author-box {
+		--emdash-author-box-surface: var(--author-box-surface, #ffffff);
+		--emdash-author-box-muted-surface: var(--author-box-muted-surface, #f6f7fb);
+		--emdash-author-box-border: var(--author-box-border, rgba(15, 23, 42, 0.08));
+		--emdash-author-box-text: var(--author-box-text, #0f172a);
+		--emdash-author-box-muted: var(--author-box-muted, #475569);
+		--emdash-author-box-link: var(--author-box-link, #7c3aed);
+		--emdash-author-box-shadow: var(--author-box-shadow, 0 20px 45px rgba(15, 23, 42, 0.08));
+		--emdash-author-box-radius: var(--author-box-radius, 24px);
+
+		margin-block: 2rem;
+		padding: 1.5rem;
+		border: 1px solid var(--emdash-author-box-border);
+		border-radius: var(--emdash-author-box-radius);
+		background:
+			radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 30%),
+			linear-gradient(180deg, var(--emdash-author-box-surface), var(--emdash-author-box-muted-surface));
+		box-shadow: var(--emdash-author-box-shadow);
+		color: var(--emdash-author-box-text);
+	}
+
+	.emdash-author-box__eyebrow {
+		margin: 0 0 1rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--emdash-author-box-link);
+	}
+
+	.emdash-author-box__single,
+	.emdash-author-box__list {
+		margin: 0;
+		padding: 0;
+	}
+
+	.emdash-author-box__single {
+		display: grid;
+	}
+
+	.emdash-author-box__list {
+		display: grid;
+		gap: 1rem;
+		list-style: none;
+	}
+
+	[data-layout="expanded"] .emdash-author-box__list {
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	}
+
+	[data-layout="compact"] .emdash-author-box__list {
+		grid-template-columns: 1fr;
+	}
+
+	.emdash-author-box__card {
+		display: grid;
+		gap: 1rem;
+		padding: 1.1rem;
+		border: 1px solid rgba(255, 255, 255, 0.7);
+		border-radius: calc(var(--emdash-author-box-radius) - 8px);
+		background: rgba(255, 255, 255, 0.8);
+		backdrop-filter: blur(10px);
+	}
+
+	.emdash-author-box__card[data-primary="true"] {
+		border-color: rgba(124, 58, 237, 0.18);
+		box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.05);
+	}
+
+	.emdash-author-box__card-header,
+	.emdash-author-box__single .emdash-author-box__card {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: start;
+		gap: 1rem;
+	}
+
+	.emdash-author-box__avatar-wrap {
+		flex-shrink: 0;
+	}
+
+	.emdash-author-box__avatar,
+	.emdash-author-box__avatar-fallback {
+		width: 3.5rem;
+		height: 3.5rem;
+		border-radius: 999px;
+	}
+
+	.emdash-author-box__avatar {
+		display: block;
+		object-fit: cover;
+		background: rgba(148, 163, 184, 0.18);
+	}
+
+	.emdash-author-box__avatar-fallback {
+		display: grid;
+		place-items: center;
+		background: linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(14, 165, 233, 0.12));
+		color: var(--emdash-author-box-link);
+		font-size: 1rem;
+		font-weight: 700;
+	}
+
+	.emdash-author-box__body {
+		min-width: 0;
+	}
+
+	.emdash-author-box__name {
+		margin: 0;
+		font-size: 1.05rem;
+		line-height: 1.2;
+	}
+
+	.emdash-author-box__bio,
+	.emdash-author-box__meta {
+		margin: 0.35rem 0 0;
+		color: var(--emdash-author-box-muted);
+		line-height: 1.65;
+	}
+
+	.emdash-author-box__link {
+		color: var(--emdash-author-box-link);
+		text-decoration: none;
+		text-underline-offset: 0.18em;
+	}
+
+	.emdash-author-box__link:hover,
+	.emdash-author-box__link:focus-visible {
+		text-decoration: underline;
+	}
+
+	@media (max-width: 720px) {
+		.emdash-author-box {
+			padding: 1.15rem;
+		}
+
+		.emdash-author-box__card-header,
+		.emdash-author-box__single .emdash-author-box__card {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+

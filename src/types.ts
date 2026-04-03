@@ -3,12 +3,14 @@ export const AUTHOR_BOX_LAYOUT_PREFERENCES = ["inherit", ...AUTHOR_BOX_LAYOUTS] 
 export const VISIBILITY_OVERRIDES = ["inherit", "show", "hide"] as const;
 export const CONTRIBUTORS_SCOPES = ["all", "primary-only"] as const;
 export const CONTRIBUTOR_MODES = ["primary-first", "byline-order"] as const;
+export const AUTHOR_BOX_HEADING_LEVELS = ["p", "h2", "h3", "h4"] as const;
 
 export type AuthorBoxLayout = (typeof AUTHOR_BOX_LAYOUTS)[number];
 export type AuthorBoxLayoutPreference = (typeof AUTHOR_BOX_LAYOUT_PREFERENCES)[number];
 export type VisibilityOverride = (typeof VISIBILITY_OVERRIDES)[number];
 export type ContributorsScope = (typeof CONTRIBUTORS_SCOPES)[number];
 export type ContributorMode = (typeof CONTRIBUTOR_MODES)[number];
+export type AuthorBoxHeadingLevel = (typeof AUTHOR_BOX_HEADING_LEVELS)[number];
 
 export interface AuthorBoxSettings {
 	showAvatar: boolean;
@@ -40,11 +42,14 @@ export interface NormalizedContributor {
 }
 
 export interface ResolvedAuthorBoxModel {
+	id: string | null;
 	heading: string | null;
+	headingLevel: AuthorBoxHeadingLevel;
 	layout: "single" | AuthorBoxLayout;
 	showAvatar: boolean;
 	showBio: boolean;
 	showWebsite: boolean;
+	showPrimaryBadge: boolean;
 	contributors: NormalizedContributor[];
 	className: string | null;
 }
@@ -54,15 +59,17 @@ export interface AuthorBoxProps {
 	content?: unknown;
 	contributors?: unknown;
 	authorBoxSettings?: Partial<AuthorBoxSettings> | null;
+	id?: string | null;
 	heading?: string | null;
+	headingLevel?: AuthorBoxHeadingLevel | null;
 	layout?: AuthorBoxLayoutPreference | null;
 	bioVisibility?: VisibilityOverride | null;
 	websiteVisibility?: VisibilityOverride | null;
 	contributorsScope?: ContributorsScope | null;
+	showPrimaryBadge?: boolean | null;
 	class?: string | null;
 	entry?: unknown;
 	page?: unknown;
 	pageCtx?: unknown;
 	value?: unknown;
 }
-

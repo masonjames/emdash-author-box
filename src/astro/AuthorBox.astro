@@ -1,19 +1,23 @@
 ---
 import { resolveAuthorBoxModel } from "../model.js";
-import type { AuthorBoxProps } from "../types.js";
+import type { AuthorBoxHeadingLevel, AuthorBoxProps } from "../types.js";
 
 const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
+const HeadingTag = (model?.headingLevel ?? "p") as AuthorBoxHeadingLevel;
+const showPrimaryBadge = Boolean(model && model.layout !== "single" && model.showPrimaryBadge);
 ---
 
 {
 	model && (
 		<aside
+			id={model.id ?? undefined}
 			class:list={["emdash-author-box", model.className]}
 			data-author-box
 			data-layout={model.layout}
 			data-contributors={model.contributors.length === 1 ? "1" : "many"}
+			data-has-avatar={model.showAvatar ? "true" : "false"}
 		>
-			{model.heading && <p class="emdash-author-box__eyebrow">{model.heading}</p>}
+			{model.heading && <HeadingTag class="emdash-author-box__eyebrow">{model.heading}</HeadingTag>}
 
 			{model.layout === "single" ? (
 				<div class="emdash-author-box__single">
@@ -37,7 +41,12 @@ const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
 								</div>
 							)}
 							<div class="emdash-author-box__body">
-								<h3 class="emdash-author-box__name">{contributor.name}</h3>
+								<div class="emdash-author-box__name-row">
+									<p class="emdash-author-box__name">{contributor.name}</p>
+									{showPrimaryBadge && contributor.isPrimary && (
+										<span class="emdash-author-box__badge">Primary</span>
+									)}
+								</div>
 								{model.showBio && contributor.bio && (
 									<p class="emdash-author-box__bio">{contributor.bio}</p>
 								)}
@@ -81,7 +90,12 @@ const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
 										</div>
 									)}
 									<div class="emdash-author-box__body">
-										<h3 class="emdash-author-box__name">{contributor.name}</h3>
+										<div class="emdash-author-box__name-row">
+											<h3 class="emdash-author-box__name">{contributor.name}</h3>
+											{showPrimaryBadge && contributor.isPrimary && (
+												<span class="emdash-author-box__badge">Primary</span>
+											)}
+										</div>
 										{model.showWebsite && contributor.websiteUrl && (
 											<p class="emdash-author-box__meta">
 												<a
@@ -186,6 +200,11 @@ const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
 		gap: 1rem;
 	}
 
+	[data-has-avatar="false"] .emdash-author-box__card-header,
+	[data-has-avatar="false"] .emdash-author-box__single .emdash-author-box__card {
+		grid-template-columns: 1fr;
+	}
+
 	.emdash-author-box__avatar-wrap {
 		flex-shrink: 0;
 	}
@@ -216,10 +235,30 @@ const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
 		min-width: 0;
 	}
 
+	.emdash-author-box__name-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
 	.emdash-author-box__name {
 		margin: 0;
 		font-size: 1.05rem;
 		line-height: 1.2;
+	}
+
+	.emdash-author-box__badge {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.28rem 0.6rem;
+		border-radius: 999px;
+		background: rgba(124, 58, 237, 0.1);
+		color: var(--emdash-author-box-link);
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.01em;
+		line-height: 1;
 	}
 
 	.emdash-author-box__bio,
@@ -240,6 +279,33 @@ const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
 		text-decoration: underline;
 	}
 
+	[data-layout="compact"] .emdash-author-box__card {
+		gap: 0.75rem;
+		padding: 0.95rem 1rem;
+	}
+
+	[data-layout="compact"] .emdash-author-box__card-header {
+		gap: 0.85rem;
+		align-items: center;
+	}
+
+	[data-layout="compact"] .emdash-author-box__avatar,
+	[data-layout="compact"] .emdash-author-box__avatar-fallback {
+		width: 3rem;
+		height: 3rem;
+	}
+
+	[data-layout="compact"] .emdash-author-box__name {
+		font-size: 1rem;
+	}
+
+	[data-layout="compact"] .emdash-author-box__bio {
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+
 	@media (max-width: 720px) {
 		.emdash-author-box {
 			padding: 1.15rem;
@@ -251,4 +317,3 @@ const model = resolveAuthorBoxModel(Astro.props as AuthorBoxProps);
 		}
 	}
 </style>
-

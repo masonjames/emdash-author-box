@@ -78,11 +78,22 @@ import { AuthorBox } from "@masonjames/emdash-author-box/astro";
 ---
 
 <AuthorBox
+	id="post-contributors"
 	heading="Meet the contributors"
-	content={post.data}
-	contributors={post.data.bylines}
+	headingLevel="h2"
+	showPrimaryBadge={true}
+	content={post}
+	contributors={post.bylines}
 />
 ```
+
+Additional component-only props:
+
+- `id` — optional DOM id for the rendered `<aside>`
+- `headingLevel` — choose from `"p" | "h2" | "h3" | "h4"`
+- `showPrimaryBadge` — show or hide the primary-contributor badge for multi-author output
+
+`id` is intended for direct component usage. Do **not** pass a shared `id` through `<PortableText ...>` unless you want every rendered author box on that page to receive the same DOM id.
 
 ## Portable Text usage
 
@@ -95,8 +106,8 @@ import { PortableText } from "emdash/ui";
 
 <PortableText
 	value={post.data.content}
-	content={post.data}
-	contributors={post.data.bylines}
+	content={post}
+	contributors={post.bylines}
 />
 ```
 
@@ -126,10 +137,11 @@ If no usable contributors are available, the component renders nothing.
 
 - one contributor → single spotlight card
 - multiple contributors + expanded layout → equal-weight contributor cards
-- multiple contributors + compact layout → tighter contributor list
+- multiple contributors + compact layout → tighter contributor list with clamped bios
+- the resolved primary contributor is badged in multi-author output
 - no avatar media → initials fallback
 - invalid website URLs → omitted safely
-- duplicate contributor entries → deduplicated
+- duplicate contributor entries → deduplicated without losing primary state
 
 ## Development
 
@@ -147,4 +159,3 @@ npm publish --access public
 ```
 
 Do **not** use `emdash plugin publish` for this package today. EmDash’s current marketplace bundler rejects native Portable Text block plugins.
-

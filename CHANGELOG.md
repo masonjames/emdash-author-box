@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added component-level `id`, `headingLevel`, and `showPrimaryBadge` props for direct theme usage
+- Fixed primary-contributor resolution so `byline-order` preserves display order without losing the true primary contributor
+- Refined compact multi-author visuals with a primary badge, tighter spacing, and clamped bios
+- Documented the new direct-component API and the `id` caveat for Portable Text usage
+
 ## 0.1.0
 
 - Initial release of `@masonjames/emdash-author-box`
@@ -8,4 +15,3 @@
 - Added sitewide settings for avatars, bios, website links, layout, and contributor ordering
 - Added render-normalization helpers and unit tests for missing-data, deduping, and override behavior
 - Added trusted-install documentation and release guidance for npm distribution
-

@@ -6,18 +6,19 @@ import {
 	normalizeAuthorBoxLayoutPreference,
 	normalizeContributorsScope,
 	normalizeVisibilityOverride,
-	readString,
 	sanitizeHttpUrl,
 } from "./schemas.js";
-import type {
-	AuthorBoxLayout,
-	AuthorBoxProps,
-	AuthorBoxSettings,
-	ContributorMode,
-	ContributorsScope,
-	NormalizedContributor,
-	ResolvedAuthorBoxModel,
-	VisibilityOverride,
+import {
+	AUTHOR_BOX_HEADING_LEVELS,
+	type AuthorBoxHeadingLevel,
+	type AuthorBoxLayout,
+	type AuthorBoxProps,
+	type AuthorBoxSettings,
+	type ContributorMode,
+	type ContributorsScope,
+	type NormalizedContributor,
+	type ResolvedAuthorBoxModel,
+	type VisibilityOverride,
 } from "./types.js";
 
 function resolveBooleanSetting(value: unknown, fallback: boolean): boolean {
@@ -26,6 +27,10 @@ function resolveBooleanSetting(value: unknown, fallback: boolean): boolean {
 
 function resolveStringSetting<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
 	return allowed.includes(value as T) ? (value as T) : fallback;
+}
+
+function resolveHeadingLevel(value: unknown): AuthorBoxHeadingLevel {
+	return resolveStringSetting(value, AUTHOR_BOX_HEADING_LEVELS, "p");
 }
 
 export function resolveAuthorBoxSettings(overrides?: Partial<AuthorBoxSettings> | null): AuthorBoxSettings {
@@ -239,6 +244,19 @@ function normalizeContributorCandidate(
 	};
 }
 
+function mergeContributorCandidate(
+	base: ContributorCandidate,
+	incoming: ContributorCandidate,
+): ContributorCandidate {
+	return {
+		...base,
+		bio: base.bio ?? incoming.bio,
+		websiteUrl: base.websiteUrl ?? incoming.websiteUrl,
+		avatarUrl: base.avatarUrl ?? incoming.avatarUrl,
+		explicitPrimary: base.explicitPrimary || incoming.explicitPrimary,
+	};
+}
+
 export function normalizeContributors(
 	input: unknown[] | null,
 	options: {
@@ -260,19 +278,24 @@ export function normalizeContributors(
 	}
 
 	const deduped: ContributorCandidate[] = [];
-	const seen = new Set<string>();
+	const seen = new Map<string, number>();
 
 	for (const candidate of rawCandidates) {
 		const key =
 			candidate.id !== null
 				? `id:${candidate.id}`
 				: `name:${candidate.name?.toLowerCase() ?? ""}:${candidate.websiteUrl ?? ""}`;
+		const existingIndex = seen.get(key);
 
-		if (seen.has(key)) {
+		if (existingIndex !== undefined) {
+			const existing = deduped[existingIndex];
+			if (existing) {
+				deduped[existingIndex] = mergeContributorCandidate(existing, candidate);
+			}
 			continue;
 		}
 
-		seen.add(key);
+		seen.set(key, deduped.length);
 		deduped.push(candidate);
 	}
 
@@ -280,22 +303,21 @@ export function normalizeContributors(
 		return [];
 	}
 
-	const fallbackPrimaryIndex = deduped.findIndex((candidate) => candidate.explicitPrimary);
-	const primaryIndex = fallbackPrimaryIndex >= 0 ? fallbackPrimaryIndex : 0;
+	const primaryCandidate = deduped.find((candidate) => candidate.explicitPrimary) ?? deduped[0] ?? null;
+	if (!primaryCandidate) {
+		return [];
+	}
 
-	let ordered = deduped.map((candidate, index) => ({ ...candidate, explicitPrimary: index === primaryIndex }));
-
+	let ordered = deduped;
 	if (options.contributorMode !== "byline-order") {
-		const primary = ordered[primaryIndex];
-		const others = ordered.filter((_, index) => index !== primaryIndex);
-		ordered = primary ? [primary, ...others] : ordered;
+		ordered = [primaryCandidate, ...deduped.filter((candidate) => candidate !== primaryCandidate)];
 	}
 
 	if (options.contributorsScope === "primary-only") {
-		ordered = ordered.slice(0, 1);
+		ordered = [primaryCandidate];
 	}
 
-	return ordered.map((candidate, index) => ({
+	return ordered.map((candidate) => ({
 		id: candidate.id,
 		name: candidate.name ?? "Unknown contributor",
 		bio: candidate.bio,
@@ -303,7 +325,7 @@ export function normalizeContributors(
 		websiteLabel: websiteLabelFromUrl(candidate.websiteUrl),
 		avatarUrl: candidate.avatarUrl,
 		initials: getContributorInitials(candidate.name ?? ""),
-		isPrimary: index === 0,
+		isPrimary: candidate === primaryCandidate,
 	}));
 }
 
@@ -357,13 +379,15 @@ export function resolveAuthorBoxModel(props: AuthorBoxProps): ResolvedAuthorBoxM
 	);
 
 	return {
+		id: cleanString(props.id),
 		heading: cleanString(props.heading) ?? cleanString(node.heading) ?? null,
+		headingLevel: resolveHeadingLevel(props.headingLevel),
 		layout: contributors.length === 1 ? "single" : resolveLayout(settings, node.layout, props.layout),
 		showAvatar: settings.showAvatar,
 		showBio,
 		showWebsite,
+		showPrimaryBadge: contributors.length > 1 && resolveBooleanSetting(props.showPrimaryBadge, true),
 		contributors,
 		className: cleanString(props.class),
 	};
 }
-

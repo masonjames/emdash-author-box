@@ -1,4 +1,4 @@
-# `@masonjames/emdash-author-box`
+# `emdash-author-box`
 
 A polished author box plugin for EmDash CMS that turns existing EmDash bylines into a reusable presentation layer.
 
@@ -26,7 +26,7 @@ This plugin depends on `componentsEntry` and `admin.portableTextBlocks`, which c
 ## Installation
 
 ```bash
-npm install @masonjames/emdash-author-box
+npm install emdash-author-box
 ```
 
 Then register it in your site:
@@ -35,7 +35,7 @@ Then register it in your site:
 // astro.config.mjs
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
-import { authorBoxPlugin } from "@masonjames/emdash-author-box";
+import { authorBoxPlugin } from "emdash-author-box";
 
 export default defineConfig({
 	integrations: [
@@ -74,7 +74,7 @@ Theme authors can import the same presentation layer directly:
 
 ```astro
 ---
-import { AuthorBox } from "@masonjames/emdash-author-box/astro";
+import { AuthorBox } from "emdash-author-box/astro";
 ---
 
 <AuthorBox
@@ -149,6 +149,10 @@ If no usable contributors are available, the component renders nothing.
 npm install
 npm run check
 ```
+
+## Migration from the scoped package
+
+This package was previously published as `@masonjames/emdash-author-box`. Use `emdash-author-box` for new installs. No content or settings migration is expected because the EmDash plugin ID remains `author-box`.
 
 ## Publishing
 

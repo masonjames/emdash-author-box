@@ -2,10 +2,10 @@
 
 ## Distribution model
 
-`@masonjames/emdash-author-box` is a **trusted native plugin** for EmDash.
+`emdash-author-box` is a **trusted native plugin** for EmDash.
 
 - Supported: npm distribution + `astro.config.mjs` install via `plugins: []`
-- Supported: direct Astro component imports from `@masonjames/emdash-author-box/astro`
+- Supported: direct Astro component imports from `emdash-author-box/astro`
 - Not supported today: `sandboxed: []`, marketplace bundle upload, or `emdash plugin publish`
 
 That limitation comes from current EmDash core rules: Portable Text block plugins require `componentsEntry` and native mode, while the current marketplace bundler rejects plugins with `portableTextBlocks`.
@@ -45,8 +45,13 @@ If you are publishing from local development, export `NPM_TOKEN` first or log in
 3. Test install from a clean EmDash project:
 
 	```bash
-	npm install @masonjames/emdash-author-box
+	npm install emdash-author-box
 	```
 
 4. Confirm the `astro.config.mjs` snippet from the README still works.
+5. Deprecate the scoped legacy package after the unscoped package is verified:
+
+	```bash
+	npm deprecate "@masonjames/emdash-author-box@*" "Renamed to emdash-author-box. Install emdash-author-box instead."
+	```
 

@@ -20,6 +20,8 @@ describe("authorBoxPlugin descriptor", () => {
 			componentsEntry: AUTHOR_BOX_COMPONENTS_ENTRYPOINT,
 			adminPages: [{ path: "/settings", label: "Author Box" }],
 		});
+		expect(AUTHOR_BOX_PLUGIN_ENTRYPOINT).toBe("emdash-author-box/plugin");
+		expect(AUTHOR_BOX_COMPONENTS_ENTRYPOINT).toBe("emdash-author-box/astro");
 	});
 
 	it("does not declare sandbox-only capabilities or storage", () => {

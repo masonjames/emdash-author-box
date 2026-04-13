@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 0.1.1
+
+- Renamed the npm package to `emdash-author-box` for unscoped installs
 - Added component-level `id`, `headingLevel`, and `showPrimaryBadge` props for direct theme usage
 - Fixed primary-contributor resolution so `byline-order` preserves display order without losing the true primary contributor
 - Refined compact multi-author visuals with a primary badge, tighter spacing, and clamped bios

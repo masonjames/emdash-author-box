@@ -1,12 +1,12 @@
 {
 	"name": "emdash-author-box",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Production-ready author box plugin for EmDash CMS with a Portable Text block and reusable Astro component.",
 	"type": "module",
 	"main": "./dist/index.js",
 	"files": [
 		"dist",
-		"src/astro",
+		"src",
 		"README.md",
 		"CHANGELOG.md",
 		"LICENSE",

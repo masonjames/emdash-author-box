@@ -53,5 +53,6 @@ If you are publishing from local development, export `NPM_TOKEN` first or log in
 
 	```bash
 	npm deprecate "@masonjames/emdash-author-box@*" "Renamed to emdash-author-box. Install emdash-author-box instead."
+	npm deprecate "emdash-author-box@0.1.1" "Packaging issue: direct Astro imports omitted supporting source files. Use emdash-author-box@^0.1.2 instead."
 	```
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.2
+
+- Fixed the published package contents so direct Astro component imports include the supporting source modules.
+
 ## 0.1.1
 
 - Renamed the npm package to `emdash-author-box` for unscoped installs

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.5
+
+- Expanded the EmDash peer dependency range so installs with EmDash 0.3.x do not warn.
+
 ## 0.1.4
 
 - Added a minimal Block Kit `routes.admin` handler for `/settings` that renders current settings and persists updates to the existing `settings:*` KV keys.

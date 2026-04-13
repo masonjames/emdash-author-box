@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import authorBoxPlugin, { authorBoxPlugin as namedAuthorBoxPlugin } from "../src/index.js";
 import {
 	AUTHOR_BOX_COMPONENTS_ENTRYPOINT,
@@ -26,9 +28,16 @@ describe("authorBoxPlugin descriptor", () => {
 
 	it("does not declare sandbox-only capabilities or storage", () => {
 		const descriptor = authorBoxPlugin();
-		expect(descriptor.capabilities).toBeUndefined();
+		expect(descriptor.capabilities).toEqual([]);
 		expect(descriptor.storage).toBeUndefined();
-		expect(descriptor.allowedHosts).toBeUndefined();
+		expect(descriptor.allowedHosts).toEqual([]);
+	});
+
+	it("keeps package plugin.id in sync", () => {
+		const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
+			plugin?: { id?: string };
+		};
+		expect(pkg.plugin?.id).toBe(AUTHOR_BOX_PLUGIN_ID);
 	});
 });
 

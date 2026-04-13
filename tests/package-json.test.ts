@@ -7,7 +7,7 @@ const packageJson = JSON.parse(
 describe("package metadata", () => {
 	it("uses the unscoped public package identity", () => {
 		expect(packageJson.name).toBe("emdash-author-box");
-		expect(packageJson.version).toBe("0.1.2");
+		expect(packageJson.version).toBe("0.1.3");
 	});
 
 	it("exports the supported trusted-native entrypoints", () => {

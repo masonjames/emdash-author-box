@@ -15,6 +15,8 @@ export function authorBoxPlugin(): PluginDescriptor {
 		format: "native",
 		entrypoint: AUTHOR_BOX_PLUGIN_ENTRYPOINT,
 		componentsEntry: AUTHOR_BOX_COMPONENTS_ENTRYPOINT,
+		capabilities: [],
+		allowedHosts: [],
 		adminPages: getAuthorBoxAdminPages(),
 	};
 }

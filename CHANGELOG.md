@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.3
+
+- Added package-level plugin identity metadata and explicit no-permission descriptor metadata for marketplace trust review.
+
 ## 0.1.2
 
 - Fixed the published package contents so direct Astro component imports include the supporting source modules.

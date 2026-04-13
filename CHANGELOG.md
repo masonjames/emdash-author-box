@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.4
+
+- Added a minimal Block Kit `routes.admin` handler for `/settings` that renders current settings and persists updates to the existing `settings:*` KV keys.
+
 ## 0.1.3
 
 - Added package-level plugin identity metadata and explicit no-permission descriptor metadata for marketplace trust review.
